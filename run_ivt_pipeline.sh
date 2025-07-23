@@ -166,6 +166,6 @@ for YYYYMM in "${MONTH_LIST[@]}"; do
 done
 
 echo ">>> Cleaning up all files in ssp370_files directory ..."
-rm -v /ec/res4/scratch/nld1254/cnrm/6hourly/ssp370_files/*
+rm -v $MODEL_INPUT/ssp370_files/*
 
 echo "✅ All processing complete."
