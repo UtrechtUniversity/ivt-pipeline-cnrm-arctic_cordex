@@ -63,15 +63,6 @@ def download_file_if_missing(url, output_path):
     except subprocess.CalledProcessError as e:
         safe_log(f"❌ Failed to download {file_name} from {url}: {e}")
         raise
-
-def delete_files_ending_in_year(local_dir, cutoff_year):
-    for fname in os.listdir(local_dir):
-        if f"{cutoff_year}" in fname:
-            try:
-                os.remove(os.path.join(local_dir, fname))
-                print(f"🧹 Deleted old file: {fname}")
-            except Exception as e:
-                print(f"⚠️ Could not delete {fname}: {e}")
                 
 def interpolate_to_pressure_levels(data, p_full, target_pressures):
     """
@@ -323,12 +314,6 @@ def main():
             output_path = os.path.join(output_dir, output_filename)
             ds_out.to_netcdf(output_path)
             print(f"Saved {var_name} data to {output_path}")
-
-    # delete files from more than two years ago, if that year is labelled in file name
-    if experiment == "ssp370":
-        local_dir = os.path.join(output_dir, 'ssp370_files')
-        delete_files_ending_in_year(local_dir, year - 2)
-
     
     print("\nClosing Dask client.")
     client.close()
