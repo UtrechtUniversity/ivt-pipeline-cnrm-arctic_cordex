@@ -146,7 +146,8 @@ for YYYYMM in "${MONTH_LIST[@]}"; do
 
 
   echo ">>> Step 1: Download & prepare data for $YEAR-$MONTH ..."
-  $PYTHON ./Download_process_cmip6.py \
+  #$PYTHON ./Download_process_cmip6.py \
+  $PYTHON ./Download_wget_process_cmip6.py \
     --gcm "$GCM" \
     --year "$YEAR" \
     --month "$MONTH" \
