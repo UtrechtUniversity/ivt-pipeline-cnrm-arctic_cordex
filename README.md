@@ -77,16 +77,23 @@ Edit the launcher script to loop over your desired months, then:
 ````bash
 sbatch run_run_ivt_pipeline.sh
 ````
-### ⚠️ Important: Do Not Run in Parallel
+## ⚠️ Important: Be Careful with Parallel Runs and File Cleanup
 
-> **Warning:**  
-> This pipeline includes a **cleanup step** that automatically deletes CMIP6 input files from *two years prior* to the currently processed month. This is necessary because the original CMIP6 input files often contain **multiple months in a single file**, and old data needs to be removed to manage disk space.
->
-> However, **running multiple pipeline jobs in parallel** (e.g., for different months or years) **can result in one job deleting files required by another**, leading to incomplete or corrupted output.
->
-> **To avoid this:**
-> - **Run only one pipeline instance at a time.**
-> - Alternatively, **disable or modify** the file deletion logic in `Download_wget_process_cmip6.py` if parallel execution is needed, but be aware this may cause storage issues.
+**Warning:**  
+The pipeline’s automatic deletion of CMIP6 input files older than two years has been **removed from the Python download script**. Instead, cleanup is performed **manually at the end of the bash wrapper script** to manage disk space.
+
+### Important considerations:
+
+- When running pipeline batches over different year ranges **in parallel** (e.g., 2016 and 2019 simultaneously), one batch may finish earlier and delete files still needed by another batch, causing incomplete or corrupted outputs.
+- To avoid this:
+  - Run pipeline batches **sequentially**, waiting for one to finish before starting the next.
+  - If parallel runs are required, **disable cleanup during runs** by leaving the deletion command commented out in the bash wrapper.
+  - Then, after all batches complete, **manually enable cleanup** by uncommenting these lines near **lines 168–169** in `run_ivt_pipeline.sh`:
+
+    ```bash
+    echo ">>> Cleaning up all files in ssp370_files directory ..."
+    rm -v $MODEL_INPUT/ssp370_files/*
+    ```
 
 ## Processing Steps (per month)
 
